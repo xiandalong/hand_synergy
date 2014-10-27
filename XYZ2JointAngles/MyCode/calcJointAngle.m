@@ -10,7 +10,9 @@
 %  finger_maker_index: a 1*M 1-D vector containing all marker indices for markers on
 %  this finger, it starts with the most distal marker.
 % Outputs:
-%  joint_angles: it's a (M+1)/2 * Frame 2-D matrix containing
+%  joint_angles: it's a (M+1)/2 * Frame 2-D matrix containing all joint angles
+%  on this finger for each frame
+
 function joint_angles = calcJointAngle(marker_pos, finger_marker_index)
 
 num_marker = length(finger_marker_index);
