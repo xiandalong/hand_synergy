@@ -1,10 +1,11 @@
 % read content from the .csv file exported from Motive
-filepath = 'S:\Xianda\optiTrack\test calibration\Session 2014-10-13\Take 2014-10-13 02.41.46 PM_example_layout_retrajectorized.csv';
+filepath = 'S:\Xianda\hand_synergy\optiTrackData\Session 2014-10-13\Take 2014-10-13 02.41.46 PM_example_layout_retrajectorized.csv';
+marker_set_name = 'example_layout';
 
 [~,~,raw_marker_pos] = xlsread( filepath);
 
 % shift by two columns because the first two columns in the raw sheet is "NAN"
-selected_col = find(~cellfun(@isempty,regexp(raw_marker_pos(4,3:end),'example_layout'))) +2; 
+selected_col = find(~cellfun(@isempty,regexp(raw_marker_pos(4,3:end),marker_set_name))) +2; 
 
 % take out all the columns corresponds to the 14 markers
 marker_pos_temp = raw_marker_pos(4:end,selected_col); 
