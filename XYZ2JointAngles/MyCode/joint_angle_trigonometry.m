@@ -53,16 +53,17 @@ palm_normal_vector = calcPalmNormVector(marker_pos, palm_marker_index);
 % (3). calculate ab-/adduction and MCP flexion angles(Type1)
 % get the markers for the last two markers for each finger
 proximal_marker_index = finger_marker_index(:,end-1:end);
+b1_b2_index = [26 27];
 % a. Thumb
-joint_angles(:,[1 2])= calcMCPJoints(marker_pos,proximal_marker_index(1,:),palm_normal_vector);
+joint_angles(:,[1 2])= calcMCPJoints(marker_pos,proximal_marker_index(1,:),b1_b2_index,palm_normal_vector);
 % b. Index
-joint_angles(:,[5 6])= calcMCPJoints(marker_pos,proximal_marker_index(2,:),palm_normal_vector);
+joint_angles(:,[5 6])= calcMCPJoints(marker_pos,proximal_marker_index(2,:),b1_b2_index,palm_normal_vector);
 % c. Middle
-joint_angles(:,[9 10])= calcMCPJoints(marker_pos,proximal_marker_index(3,:),palm_normal_vector);
+joint_angles(:,[9 10])= calcMCPJoints(marker_pos,proximal_marker_index(3,:),b1_b2_index,palm_normal_vector);
 % d. Ring
-joint_angles(:,[13 14])= calcMCPJoints(marker_pos,proximal_marker_index(4,:),palm_normal_vector);
+joint_angles(:,[13 14])= calcMCPJoints(marker_pos,proximal_marker_index(4,:),b1_b2_index,palm_normal_vector);
 % e. Pinky
-joint_angles(:,[17 18])= calcMCPJoints(marker_pos,proximal_marker_index(5,:),palm_normal_vector);
+joint_angles(:,[17 18])= calcMCPJoints(marker_pos,proximal_marker_index(5,:),b1_b2_index,palm_normal_vector);
 
 % (4). calculate the flexion-only joints
 % a. Thumb

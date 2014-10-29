@@ -7,7 +7,9 @@
 %  palm_maker_index: a 1*M 1-D vector containing all marker indices for markers on
 %  the palm, the order does not matter.
 
-
+% Outputs:
+%  palm_norm_vector: it's a 3* Frame 2-D matrix containing normal vector of
+%  the palm plane for each frame
 
 function palm_norm_vector = calcPalmNormVector(marker_pos, palm_marker_index)
 
