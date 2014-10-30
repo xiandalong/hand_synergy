@@ -31,7 +31,7 @@ for frame_index = 1:num_frame
     % get palm marker position for a frame
     palm_marker_pos_snap = palm_marker_pos(:,frame_index);
     % make it in a format of [X1,Y1,Z1;Z2,Y2,Z2;...]
-    palm_marker_pos_snap = (reshape(palm_marker_pos_snap,3))';
+    palm_marker_pos_snap = (reshape( palm_marker_pos_snap,[3,length(palm_marker_pos_snap)/3] ) )';
     
     palm_norm_vector(:,frame_index)= affine_fit(palm_marker_pos_snap);
     

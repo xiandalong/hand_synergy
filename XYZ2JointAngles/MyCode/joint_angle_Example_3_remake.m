@@ -1,5 +1,7 @@
 %% 1. Read data from the .csv file and reformat the data
-Read_data;
+filepath = 'S:\Xianda\hand_synergy\optiTrackData\Session 2014-10-13\Take 2014-10-13 02.41.46 PM_example_layout_retrajectorized.csv';
+marker_set_name = 'example_layout';
+marker_pos = Read_data(filepath,marker_set_name);
 
 %% 2. joint angel estimation code copied from example 3 of the toolbox
 data = marker_pos;

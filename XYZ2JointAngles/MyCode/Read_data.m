@@ -1,6 +1,11 @@
+% This function reads marker position data from *csv file exported from
+% Motive(optiTrack Inc.)
+
+function marker_pos = Read_data(filepath,marker_set_name)
+
 % read content from the .csv file exported from Motive
-filepath = 'S:\Xianda\hand_synergy\optiTrackData\Session 2014-10-13\Take 2014-10-13 02.41.46 PM_example_layout_retrajectorized.csv';
-marker_set_name = 'example_layout';
+% filepath = 'S:\Xianda\hand_synergy\optiTrackData\Session 2014-10-13\Take 2014-10-13 02.41.46 PM_example_layout_retrajectorized.csv';
+% marker_set_name = 'example_layout';
 
 [~,~,raw_marker_pos] = xlsread( filepath);
 
@@ -20,10 +25,12 @@ end
 % rearrange the matrix so the columns are ordered by the marker index
 % e.g. X,Y,Z of "example_layout-1" corresponds to columns 1-3, X,Y,Z of
 % "example_layout-2" corresponds to columns 4-6 etc.
-[C,ia,ic] = unique(marker_index); % ia will be the re-ordered marker index of X to achieve order of "example_layout_1,2,3..."
+[~,ia,~] = unique(marker_index); % ia will be the re-ordered marker index of X to achieve order of "example_layout_1,2,3..."
 new_order = [ia,ia+1,ia+2]';
 new_order = new_order(:);
 new_order_checklist = (marker_pos_temp([1 4],new_order))'; % !!! CHECK "new_order_checklist" to make sure the output is correctly re-ordered
 
 % marker_pos contains a matrix with each column represents one frame and each row represents coordinates for X/Y/Z
 marker_pos = (cell2mat(marker_pos_temp(5:end, new_order)))';
+
+end
