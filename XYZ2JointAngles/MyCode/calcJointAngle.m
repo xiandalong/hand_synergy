@@ -38,7 +38,7 @@ phalange1 = markers_pos_joint1(4:6,:)-markers_pos_joint1(1:3,:);
 phalange2 = markers_pos_joint1(7:9,:)-markers_pos_joint1(4:6,:);
 
 % calculate joint angle
-theta = acosd(sum(phalange1.*phalange2,1)./((sqrt(sum(phalange1.^2,1)).*(sqrt(sum(phalange2.^2,1))))));
+theta = acosd(sum(phalange1.*phalange2,1)./(sqrt(sum(phalange1.^2,1)).*(sqrt(sum(phalange2.^2,1)))));
 
 joint_angles(1,:) = theta;
 
