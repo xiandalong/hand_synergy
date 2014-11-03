@@ -1,4 +1,4 @@
-function [qm, S] = SGsantello_synergies
+function [qm, S] = SGsantelloSynergies
 
 
 S_tmp = load('S_matrix.mat');
