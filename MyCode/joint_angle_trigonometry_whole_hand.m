@@ -24,7 +24,7 @@ finger_marker_index = [1 2 3 4 5; 6 7 8 9 10; 11 12 13 14 15; 16 17 18 19 20;...
 
 % (2). get a palm plane by fitting all markers on palm into a plane
 
-palm_normal_vector = calcPalmNormVector(marker_pos, palm_marker_index);
+palm_normal_vector = calcPalmNormVector(marker_pos, palm_marker_index([1 2 4 5]));
 
 % (3). calculate ab-/adduction and MCP flexion angles(Type1)
 % get the markers for the last two markers for each finger
