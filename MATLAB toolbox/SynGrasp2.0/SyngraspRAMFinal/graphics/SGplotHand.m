@@ -56,7 +56,7 @@ zlabel('z')
 for j=1:hand.n % for each finger
     
     % plot the finger base
-    plot3(hand.F{j}.base(1,4),hand.F{j}.base(2,4),hand.F{j}.base(3,4),'r*');
+    plot3(hand.F{j}.base(1,4),-hand.F{j}.base(2,4),hand.F{j}.base(3,4),'r*');
     if(j == 1)         
         hold on        
     end
@@ -75,7 +75,7 @@ for j=1:hand.n % for each finger
        
        % plot the joint location
        if i < hand.F{j}.n+1
-           h = plot3(referenceJoint(1,4),referenceJoint(2,4),referenceJoint(3,4),'ro');          
+           h = plot3(referenceJoint(1,4),-referenceJoint(2,4),referenceJoint(3,4),'ro');          
            set(h,'MarkerSize',8);
            set(h,'LineWidth',3);
        end

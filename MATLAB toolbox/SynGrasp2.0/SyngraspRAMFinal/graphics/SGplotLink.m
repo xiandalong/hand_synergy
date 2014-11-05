@@ -82,7 +82,7 @@ xst = zeros(21,21);
 yst = xst;
 zst = xst;
 
-h = surf(xrot,yrot,zrot);
+h = surf(xrot,-yrot,zrot);
 alpha(h,transp)
 [xs,ys,zs] = sphere(20);
 for i = 1:21  
@@ -95,7 +95,7 @@ for i = 1:21
     end
 end
 
-surf(xst,yst,zst)
+surf(xst,-yst,zst)
 
 
     

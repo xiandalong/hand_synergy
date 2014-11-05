@@ -107,6 +107,6 @@ for i = 1:nc
 end
 
 k = convhulln(X);
-trisurf(k,X(:,1),X(:,2),X(:,3));
+trisurf(k,X(:,1),-X(:,2),X(:,3));
 hold on
 
