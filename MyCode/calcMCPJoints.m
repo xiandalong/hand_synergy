@@ -31,6 +31,14 @@
 % for each frame: the 1st row represents radial abduction
 % angle for each frame, the 2nd row represents fexion angle for each frame
 
+% 11/13/2014 v1.1 update: 
+% Algorithm simplified by removing unnecessary steps:
+% removed the norm vector correction part, compare 
+% the cross product of b1-b2 and b3-cmc4 (reference vector) with the cross 
+% product of b1-b2 and projected proximal phalange directly, in order to
+% get the direction/sign(+/-) of radial joint angle. The output was
+% confirmed to be the same.
+
 function joint_angles = calcMCPJoints(marker_pos,proximal_marker_index,b1_b2_index,b3_cmc4_index, palm_normal_vector)
 
 num_frame = size(marker_pos,2); 
@@ -68,22 +76,27 @@ vector_b3_cmc4 = marker_pos_b3_cmc4(4:6,:)-marker_pos_b3_cmc4(1:3,:);
 % OR WE CAN USE:
 vector_ref = cross(vector_b1_b2,vector_b3_cmc4,1);
 
-% calculate the dot product and correct the direction of normal vector for
-% each frame %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-dotProduct_matrix = dot(vector_ref, palm_normal_vector,1);
-correction_matrix = sign(dotProduct_matrix);
-correction_matrix = repmat(correction_matrix,3,1);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % calculate the dot product and correct the direction of normal vector for
+% % each frame %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% dotProduct_matrix = dot(vector_ref, palm_normal_vector,1);
+% correction_matrix = sign(dotProduct_matrix);
+% correction_matrix = repmat(correction_matrix,3,1);
+% 
+% palm_normal_vector_corrected = correction_matrix.*palm_normal_vector; % now all the normal vectors in "palm_normal_vector_corrected" are pointing to the ventral side.
+% 
+% % NOTICE: even though the corrected norm vector can be useful, it's not
+% % necessary
 
-palm_normal_vector_corrected = correction_matrix.*palm_normal_vector; % now all the normal vectors in "palm_normal_vector_corrected" are pointing to the ventral side.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % project vectors representing proximal phalanges and b1-b2 onto the palm
 % plane %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-proj_vector_proximal_phalange = projectVector( vector_proximal_phalange, palm_normal_vector_corrected );
-proj_vector_b1_b2 = projectVector( vector_b1_b2, palm_normal_vector_corrected );
+proj_vector_proximal_phalange = projectVector( vector_proximal_phalange, palm_normal_vector );
+proj_vector_b1_b2 = projectVector( vector_b1_b2, palm_normal_vector);
 
 % calculate the ab-/adduction angle %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1. decide which direction is this angle (radial side +, ulnar side -)
-sign_multiplier = sign(dot(palm_normal_vector_corrected,cross(proj_vector_proximal_phalange,proj_vector_b1_b2,1),1));
+sign_multiplier = sign(dot(vector_ref,cross(proj_vector_proximal_phalange,proj_vector_b1_b2,1),1));
 % 2. calculte the angle between the projected vectors
 joint_angles(1,:) = sign_multiplier.* acosd(dot(proj_vector_proximal_phalange,proj_vector_b1_b2,1)./...
     (sqrt(sum(proj_vector_proximal_phalange.^2,1)).*(sqrt(sum(proj_vector_b1_b2.^2,1)))));
