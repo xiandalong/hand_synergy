@@ -7,7 +7,7 @@ close all;
 clc;
 
 % (1). read data from exported .csv file, "marker_pos" is the final output
-filepath = 'S:\Xianda\hand_synergy\optiTrackData\Session 2014-10-28\Take 2014-10-28 12.39.08 AM.csv';
+filepath = 'S:\Xianda\Dropbox\Data and docs\optiTrackData\Session 2014-10-28\Take 2014-10-28 12.39.08 AM.csv';
 marker_set_name = 'LeftHand';
 marker_pos = Read_data(filepath,marker_set_name);
 
