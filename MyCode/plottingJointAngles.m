@@ -6,6 +6,9 @@
 % clear all
 % clc
 
+% joint_angles is a N by M matrix, where N is total number of joint angles
+% and M is the total number of frames for a trial/recording
+
 %%% initialize parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hand = SGparadigmatic;
 
