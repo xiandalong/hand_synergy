@@ -1,7 +1,9 @@
 %% This code is used for plotting the joint angles
 % adopted from the code in "example.m" in
 % "\SynGrasp2.0\SyngraspRAMFinal\examples\Basic"
+% 11/24/2014 update: wrap it inside a function
 
+function plottingJointAngles(joint_angles,save_path, sma_factor)
 % close all
 % clear all
 % clc
@@ -16,7 +18,7 @@ hand = SGparadigmatic;
 joint_angles_sm = zeros(size(joint_angles));
 num_frame = size(joint_angles,2);
 
-sma_factor = 10;
+% sma_factor = 10;
 
 weight = ones(1,sma_factor)/sma_factor;
 
@@ -25,7 +27,7 @@ for j=1:size(joint_angles,1)
 end
 %%% create video writer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-writerObj = VideoWriter('joint_angle_movement_10SMA.avi');
+writerObj = VideoWriter(save_path);
 writerObj.FrameRate = 120;
 writerObj.Quality = 100;
 open(writerObj);
@@ -53,3 +55,5 @@ axis tight;
 xlabel('time/sec');
 ylabel('joint angle/degree');
 title('Joint Angle Time Series');
+
+end
