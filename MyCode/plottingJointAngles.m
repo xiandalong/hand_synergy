@@ -49,6 +49,7 @@ end
 close(writerObj);
 
 %% This part is to plot joint angle time series
+figure
 t = (1:num_frame)/writerObj.FrameRate;
 plot(t, joint_angles');
 axis tight;
