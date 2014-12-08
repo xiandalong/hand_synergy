@@ -20,7 +20,7 @@ joint_angles_LeftHand = getJointAngles(csv_path,marker_set_LeftHand,...
 
 % Right Hand
 marker_set_RightHand = 'RightHand';
-palm_marker_index_RightHand = 26:34;
+palm_marker_index_RightHand = 26:33;
 finger_marker_index_RightHand =reshape(1:25,5,5)';
 b1_b2_index_RightHand =[32,28];
 b3_cmc4_index_RightHand =[33,26];
