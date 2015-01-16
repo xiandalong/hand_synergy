@@ -1,7 +1,14 @@
 %% 2. Get joint angles for all fingers
 % getting joint angles for all fingers, including the joint angle between
 % the palm and a each finger
+
 % 11/24/2014 update: wrap everything into a function
+
+% 1/16/2015 update: bug identified: for abduction angles, the direction of
+% angle should be defined oppositely for left hand and right hand; the
+% direction for felxion angles remains the same. So code in
+% "calcMCPJoints.m" was modified to fix the issue.
+
 % INPUTs:
 %  csv_path: the filepath of the input *.csv file
 %  marker_set_name: the name of the Markerset in Motive
@@ -55,19 +62,19 @@ joint_angles([17 18],:)= calcMCPJoints(marker_pos,proximal_marker_index(5,:),b1_
 % finger
 % a. Thumb
 thumb_marker_index = finger_marker_index(1,:);
-joint_angles([4 3],:) = calcJointAngle(marker_pos, thumb_marker_index);
+joint_angles([4 3],:) = calcFlexAngle(marker_pos, thumb_marker_index);
 % b. Index
 index_marker_index = finger_marker_index(2,:);
-joint_angles([8 7],:) = calcJointAngle(marker_pos, index_marker_index);
+joint_angles([8 7],:) = calcFlexAngle(marker_pos, index_marker_index);
 % c. Middle
 middle_marker_index = finger_marker_index(3,:);
-joint_angles([12 11],:) = calcJointAngle(marker_pos, middle_marker_index);
+joint_angles([12 11],:) = calcFlexAngle(marker_pos, middle_marker_index);
 % d. Ring
 ring_marker_index = finger_marker_index(4,:);
-joint_angles([16 15],:) = calcJointAngle(marker_pos, ring_marker_index);
+joint_angles([16 15],:) = calcFlexAngle(marker_pos, ring_marker_index);
 % e. Pinky
 pinky_marker_index = finger_marker_index(5,:);
-joint_angles([20 19],:) = calcJointAngle(marker_pos, pinky_marker_index);
+joint_angles([20 19],:) = calcFlexAngle(marker_pos, pinky_marker_index);
 
 
 end

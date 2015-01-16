@@ -1,4 +1,4 @@
-% This function is used to calculate joint angle for a
+% This function is used to calculate felxion-only joint angle for a
 % specific finger. This function will be universal to all fingers as long
 % as the markers has the following patterns: one marker on the most distal
 % phalange and two markers with appropriate distance on all the other
@@ -13,7 +13,7 @@
 %  joint_angles: it's a (M-1)/2 * Frame 2-D matrix containing all joint angles
 %  on this finger for each frame
 
-function joint_angles = calcJointAngle(marker_pos, finger_marker_index)
+function joint_angles = calcFlexAngle(marker_pos, finger_marker_index)
 
 num_marker = length(finger_marker_index);
 num_joints = (num_marker-1)/2;

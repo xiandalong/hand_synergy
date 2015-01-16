@@ -1,10 +1,23 @@
-
+% This is for grasping with Right Hand
 
 %% read all the data from the *.csv files and convert into joint angles
 xls_path = 'S:\Xianda\Dropbox\Haptics research\Data and docs\recording_list.xlsx';
-table = readtable(xls_path);
 
-data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-11-20';
+% % Subject 1
+% table = readtable(xls_path,'sheet','Subj1_Xianda');
+% data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-11-20'; %Subject 1: Xianda
+
+% % Subject 2
+% table = readtable(xls_path,'sheet','Subj2_Phil');
+% data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-10'; %Subject 2: Phil
+
+% % Subject 3
+% table = readtable(xls_path,'sheet','Subj3_Yitian');
+% data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-11'; %Subject 3: Yitian
+
+% Subject 4
+table = readtable(xls_path,'sheet','Subj4_Darshan');
+data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-19'; %Subject 4: Darshan
 
 frame_rate = 120; % in Hz
 duration = 0.5; % in seconds
@@ -39,8 +52,8 @@ for j=1:size(table,1)
         palm_marker_index_RightHand,finger_marker_index_RightHand,b1_b2_index_RightHand,b3_cmc4_index_RightHand);
     
     % selected the the frames of interest
-    joint_angles_LeftHand = joint_angles_LeftHand(:,table.start_frame(j):table.start_frame(j)+frame_rate*duration-1);
-    joint_angles_RightHand = joint_angles_RightHand(:,table.start_frame(j):table.start_frame(j)+frame_rate*duration-1);
+    joint_angles_LeftHand = joint_angles_LeftHand(:,table.right_start_frame(j):table.right_start_frame(j)+frame_rate*duration-1);
+    joint_angles_RightHand = joint_angles_RightHand(:,table.right_start_frame(j):table.right_start_frame(j)+frame_rate*duration-1);
     
     % put the joint angles into "Data_array"
     Data_array{j,6} = joint_angles_LeftHand;
