@@ -7,17 +7,17 @@ xls_path = 'S:\Xianda\Dropbox\Haptics research\Data and docs\recording_list.xlsx
 % table = readtable(xls_path,'sheet','Subj1_Xianda');
 % data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-11-20'; %Subject 1: Xianda
 
-% % Subject 2
-% table = readtable(xls_path,'sheet','Subj2_Phil');
-% data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-10'; %Subject 2: Phil
+% Subject 2
+table = readtable(xls_path,'sheet','Subj2_Phil');
+data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-10'; %Subject 2: Phil
 
 % % Subject 3
 % table = readtable(xls_path,'sheet','Subj3_Yitian');
 % data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-11'; %Subject 3: Yitian
 
-% Subject 4
-table = readtable(xls_path,'sheet','Subj4_Darshan');
-data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-19'; %Subject 4: Darshan
+% % Subject 4
+% table = readtable(xls_path,'sheet','Subj4_Darshan');
+% data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-19'; %Subject 4: Darshan
 
 frame_rate = 120; % in Hz
 duration = 0.5; % in seconds
