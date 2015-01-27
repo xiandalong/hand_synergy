@@ -15,7 +15,8 @@ palm_marker_index_LeftHand = 26:33;
 finger_marker_index_LeftHand =reshape(1:25,5,5)';
 b1_b2_index_LeftHand =[32,28];
 b3_cmc4_index_LeftHand =[33,26];
-joint_angles_LeftHand = getJointAngles(csv_path,marker_set_LeftHand,...
+marker_pos_LeftHand = Read_data(csv_path,marker_set_LeftHand);
+joint_angles_LeftHand = getJointAngles(marker_pos_LeftHand,...
     palm_marker_index_LeftHand,finger_marker_index_LeftHand,b1_b2_index_LeftHand,b3_cmc4_index_LeftHand);
 
 % Right Hand
@@ -24,7 +25,8 @@ palm_marker_index_RightHand = 26:33;
 finger_marker_index_RightHand =reshape(1:25,5,5)';
 b1_b2_index_RightHand =[32,28];
 b3_cmc4_index_RightHand =[33,26];
-joint_angles_RightHand = getJointAngles(csv_path,marker_set_RightHand,...
+marker_pos_RightHand = Read_data(csv_path,marker_set_RightHand);
+joint_angles_RightHand = getJointAngles(marker_pos_RightHand,...
     palm_marker_index_RightHand,finger_marker_index_RightHand,b1_b2_index_RightHand,b3_cmc4_index_RightHand);
 
 %% (2). plotting and making animation for both hands

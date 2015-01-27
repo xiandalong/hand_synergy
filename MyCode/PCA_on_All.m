@@ -1,26 +1,30 @@
 clear;clc
 
-% PCA on all data for left hand mimicing
+% PCA on all data for left/right hand mimicing
 
-root_dir = 'S:\Xianda\Dropbox\Haptics research\hand_synergy\MyCode\RightMimicLeft';
+% Left hand Mimicing Right hand
+root_dir = 'S:\Xianda\Dropbox\Haptics research\hand_synergy\MyCode\LeftMimicRight';
+data_list = {'Data_Subj1.mat','Data_Subj2.mat','Data_Subj3.mat','Data_Subj4.mat'};
 
-data_list = {'Data_Subj2.mat','Data_Subj3.mat','Data_Subj4.mat'};
+% % Right hand mimicing left hand
+% root_dir = 'S:\Xianda\Dropbox\Haptics research\hand_synergy\MyCode\RightMimicLeft';
+% data_list = {'Data_Subj2.mat','Data_Subj3.mat','Data_Subj4.mat'};
 
-Data_all = {};
+Data_all = table();
 
 frame_rate = 120; % in Hz
 duration = 0.5; % in seconds
 
-Left_JA_col_index = 6;
-Right_JA_col_index = 7;
+% Left_JA_col_index = 6;
+% Right_JA_col_index = 7;
 
 % load data from all subjects
 for j=1:length(data_list)
     
     data_path = fullfile(root_dir,data_list{j});
     load(data_path);
-    Data_all = [Data_all;Data_array];
-    clear Data_array;
+    Data_all = [Data_all;Data_table];
+    clear Data_table;
     
 end
 
@@ -28,14 +32,14 @@ end
 num_trials = size(Data_all,1);
 raw_data_Left = zeros(num_trials,20);
 for j=1:size(Data_all,1)
-    raw_data_Left(j,:)= ( mean(Data_all{j,Left_JA_col_index},2))';
+    raw_data_Left(j,:)= ( mean(Data_all.joint_angles_LeftHand{j},2))';
 end
 
 % Right Hand
 num_trials = size(Data_all,1);
 raw_data_Right = zeros(num_trials,20);
 for j=1:size(Data_all,1)
-    raw_data_Right(j,:)= ( mean(Data_all{j,Right_JA_col_index},2))';
+    raw_data_Right(j,:)= ( mean(Data_all.joint_angles_RightHand{j},2))';
 end
 
 [coeff,score,latent,tsquared,explained,mu] = pca([raw_data_Left;raw_data_Right]);

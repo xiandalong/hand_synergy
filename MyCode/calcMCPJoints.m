@@ -40,7 +40,7 @@
 % confirmed to be the same.
 
 
-function joint_angles = calcMCPJoints(marker_pos,proximal_marker_index,b1_b2_index,b3_cmc4_index, palm_normal_vector,hand_id)
+function joint_angles = calcMCPJoints(marker_pos,proximal_marker_index,b1_b2_index,b3_cmc4_index, palm_normal_vector)
 
 num_frame = size(marker_pos,2); 
 % initialize output %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

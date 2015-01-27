@@ -20,11 +20,11 @@
 %  b3_cmc4_index: index of marker on b3&cmc4 (check the same reference as
 %    above)
 
-function joint_angles = getJointAngles(csv_path,marker_set_name,palm_marker_index,finger_marker_index,b1_b2_index,b3_cmc4_index)
+function joint_angles = getJointAngles(marker_pos,palm_marker_index,finger_marker_index,b1_b2_index,b3_cmc4_index)
 % (1). read data from exported .csv file, "marker_pos" is the final output
 % filepath = 'S:\Xianda\Dropbox\Data and docs\optiTrackData\Session 2014-10-28\Take 2014-10-28 12.39.08 AM.csv';
 % marker_set_name = 'LeftHand';
-marker_pos = Read_data(csv_path,marker_set_name);
+% marker_pos = Read_data(csv_path,marker_set_name);
 
 
 % define the output as a 20*N matrix, N being the number of frames in the

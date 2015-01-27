@@ -39,7 +39,8 @@ for j=1:size(table,1)
     finger_marker_index_LeftHand =reshape(1:25,5,5)';
     b1_b2_index_LeftHand =[32,28];
     b3_cmc4_index_LeftHand =[33,26];
-    joint_angles_LeftHand = getJointAngles(csv_path,marker_set_LeftHand,...
+    marker_pos_LeftHand = Read_data(csv_path,marker_set_LeftHand);
+    joint_angles_LeftHand = getJointAngles(marker_pos_LeftHand,...
         palm_marker_index_LeftHand,finger_marker_index_LeftHand,b1_b2_index_LeftHand,b3_cmc4_index_LeftHand);
     
     % Right Hand
@@ -48,12 +49,13 @@ for j=1:size(table,1)
     finger_marker_index_RightHand =reshape(1:25,5,5)';
     b1_b2_index_RightHand =[32,28];
     b3_cmc4_index_RightHand =[33,26];
-    joint_angles_RightHand = getJointAngles(csv_path,marker_set_RightHand,...
+    marker_pos_RightHand = Read_data(csv_path,marker_set_RightHand);
+    joint_angles_RightHand = getJointAngles(marker_pos_RightHand,...
         palm_marker_index_RightHand,finger_marker_index_RightHand,b1_b2_index_RightHand,b3_cmc4_index_RightHand);
     
     % selected the the frames of interest
-    joint_angles_LeftHand = joint_angles_LeftHand(:,table.left_start_frame(j):table.left_start_frame(j)+frame_rate*duration-1);
-    joint_angles_RightHand = joint_angles_RightHand(:,table.left_start_frame(j):table.left_start_frame(j)+frame_rate*duration-1);
+    joint_angles_LeftHand = joint_angles_LeftHand(:,table.rightMimic_start_frame(j):table.rightMimic_start_frame(j)+frame_rate*duration-1);
+    joint_angles_RightHand = joint_angles_RightHand(:,table.rightMimic_start_frame(j):table.rightMimic_start_frame(j)+frame_rate*duration-1);
     
     % put the joint angles into "Data_array"
     Data_array{j,6} = joint_angles_LeftHand;
