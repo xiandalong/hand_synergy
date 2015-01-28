@@ -1,8 +1,8 @@
 clear;clc
 
-% PCA on all data for left/right hand mimicing
+% PCA on all data for left/right hand mimicing during holding phase
 
-% Left hand Mimicing Right hand
+% select case
 root_dir = 'S:\Xianda\Dropbox\Haptics research\hand_synergy\MyCode\LeftMimicRight';
 data_list = {'Data_Subj1.mat','Data_Subj2.mat','Data_Subj3.mat','Data_Subj4.mat'};
 
@@ -28,18 +28,18 @@ for j=1:length(data_list)
     
 end
 
-% Left Hand
-num_trials = size(Data_all,1);
-raw_data_Left = zeros(num_trials,20);
-for j=1:size(Data_all,1)
-    raw_data_Left(j,:)= ( mean(Data_all.joint_angles_LeftHand{j},2))';
-end
-
-% Right Hand
-num_trials = size(Data_all,1);
-raw_data_Right = zeros(num_trials,20);
-for j=1:size(Data_all,1)
-    raw_data_Right(j,:)= ( mean(Data_all.joint_angles_RightHand{j},2))';
+raw_data_Left = zeros(num_trials,hand_DOF);
+raw_data_Right = zeros(num_trials,hand_DOF);
+for j=1:num_trials
+    % select which hand is the micmicing hand, to decide the time span of
+    % it's holding phase
+    if regexp(mimicHand,'left')
+        raw_data_Left(j,:)= ( mean(Data_table.joint_angles_LeftHand{j}(:,Data_table.leftMimic_start_frame(j):Data_table.leftMimic_start_frame(j)+frame_rate*duration-1),2))'; % Left Hand
+        raw_data_Right(j,:)= ( mean(Data_table.joint_angles_RightHand{j}(:,Data_table.leftMimic_start_frame(j):Data_table.leftMimic_start_frame(j)+frame_rate*duration-1),2))'; % Right Hand
+    elseif regexp(mimicHand,'right')
+        raw_data_Left(j,:)= ( mean(Data_table.joint_angles_LeftHand{j}(:,Data_table.rightMimic_start_frame(j):Data_table.rightMimic_start_frame(j)+frame_rate*duration-1),2))'; % Left Hand
+        raw_data_Right(j,:)= ( mean(Data_table.joint_angles_RightHand{j}(:,Data_table.rightMimic_start_frame(j):Data_table.rightMimic_start_frame(j)+frame_rate*duration-1),2))'; % Right Hand
+    end
 end
 
 [coeff,score,latent,tsquared,explained,mu] = pca([raw_data_Left;raw_data_Right]);
