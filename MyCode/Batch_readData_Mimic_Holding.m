@@ -8,23 +8,23 @@
 
 clear; clc; close all
 %% read all the data from the *.csv files and convert into joint angles
-xls_path = 'S:\Xianda\Dropbox\Haptics research\Data and docs\recording_list.xlsx';
+xls_path = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\recording_list.xlsx';
 
-% Subject 1
-Data_table = readtable(xls_path,'sheet','Subj1_Xianda');
-data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-11-20'; %Subject 1: Xianda
+% % Subject 1
+% Data_table = readtable(xls_path,'sheet','Subj1_Xianda');
+% data_dir = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\optiTrackData\Session 2014-11-20'; %Subject 1: Xianda
 
-% % Subject 2
-% Data_table = readtable(xls_path,'sheet','Subj2_Phil');
-% data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-10'; %Subject 2: Phil
+% Subject 2
+Data_table = readtable(xls_path,'sheet','Subj2_Phil');
+data_dir = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\optiTrackData\Session 2014-12-10'; %Subject 2: Phil
 
 % % Subject 3
 % Data_table = readtable(xls_path,'sheet','Subj3_Yitian');
-% data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-11'; %Subject 3: Yitian
+% data_dir = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\optiTrackData\Session 2014-12-11'; %Subject 3: Yitian
 
 % % Subject 4
 % Data_table = readtable(xls_path,'sheet','Subj4_Darshan');
-% data_dir = 'S:\Xianda\Dropbox\Haptics research\Data and docs\optiTrackData\Session 2014-12-19'; %Subject 4: Darshan
+% data_dir = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\optiTrackData\Session 2014-12-19'; %Subject 4: Darshan
 
 frame_rate = 120; % in Hz
 duration = 0.5; % in seconds
@@ -35,7 +35,7 @@ duration = 0.5; % in seconds
 % Right_JA_col_index = 7;
 % %
 
-mimicHand = 'left';
+mimicHand = 'right';
 num_trials = size(Data_table,1);
 hand_DOF = 20; % using 20-DOF hand model
 % Grasping_Phase = 'reaching';

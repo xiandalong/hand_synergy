@@ -2,11 +2,17 @@
 % generate the variable "Data_table"
 
 % plotting the averaged joint angles for each condition in reaching phase
+subj = 'Subject4';
+mimicHand = 'right';
+if strcmp(mimicHand,'left')
+    data_path = ['C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\LeftMimicRight\Data_',subj,'.mat'];
+elseif strcmp(mimicHand,'right')
+    data_path = ['C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\RightMimicLeft\Data_',subj,'.mat'];
+else error('Mimicking hand should be either left or right');
+end
+load(data_path); % load "Data_table" from saved mat file
 
-% data_path = 'S:\Xianda\Dropbox\Haptics research\hand_synergy\MyCode\LeftMimicRight\Data_Subj1.mat';
-% load(data_path); % load "Data_table" from saved mat file
 
-mimicHand = 'left';
 num_trials = size(Data_table,1);
 hand_DOF = 20; % using 20-DOF hand model
 
@@ -42,7 +48,20 @@ for j=1:num_trials
 end
 
 Grouping = Data_table.Object;
+
+% making boxplot to show the MGA for each object&synchronicity
+figure;
+subplot(2,1,1);
 boxplot(MGA_Left,Grouping);
+ylabel('distance');
+ylim([0.1 0.6]);
+title(['Left Hand for ',mimicHand,' mimicking']);
+
+subplot(2,1,2);
+boxplot(MGA_Right,Grouping);
+ylim([0.1 0.6]);
+title(['Right Hand for ',mimicHand,' mimicking']);
+suptitle([subj,' Maximum Grip Aperture']);
 
 % 3. normalize the time spans across all trials for GA, then plot them in a
 % 3X2 subplots
@@ -53,6 +72,10 @@ boxplot(MGA_Left,Grouping);
 %%% 1. cone async %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 y_range = [0,0.5];
+
+
+f2 = figure;
+
 
 subplot(4,3,1);
 hold on
@@ -76,6 +99,7 @@ for j=6:10
 end
 ylim(y_range);
 title(Data_table.Object{j});
+ylabel('distance');
 
 %%% 3. cylinder async %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(4,3,2);
@@ -112,6 +136,7 @@ for j=21:25
 end
 ylim(y_range);
 title(Data_table.Object{j});
+legend('Left Hand','Right Hand');
 
 %%% 6.drum sync %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(4,3,6);
@@ -172,6 +197,7 @@ for j=46:50
 end
 ylim(y_range);
 title(Data_table.Object{j});
+xlabel('normalized time');
 
 %%% 11.pen async %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(4,3,9);
@@ -196,3 +222,5 @@ for j=56:60
 end
 ylim(y_range);
 title(Data_table.Object{j});
+
+suptitle([subj,' Grip Aperture During Reaching Phase for ',mimicHand,' mimicking']);
