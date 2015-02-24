@@ -28,6 +28,7 @@ data_dir = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\optiTrack
 
 frame_rate = 120; % in Hz
 duration = 0.5; % in seconds
+n_frames = frame_rate*duration;
 
 % % For old version:
 % Data_array = table2cell(Data_table);
@@ -39,6 +40,7 @@ mimicHand = 'right';
 num_trials = size(Data_table,1);
 hand_DOF = 20; % using 20-DOF hand model
 % Grasping_Phase = 'reaching';
+
 
 palm_marker_index = 26:33;
 finger_marker_index =reshape(1:25,5,5)';
@@ -89,62 +91,87 @@ end
 
 %% PCA and E-distance calculation
 % put all the data into a 2D matrix for PCA
+% use one of the versions below
+%%%%%%%%%%%%%%%%%%%%%%%% VERSION 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% taking in an epoch in the holding phase, and spit out the average %
+% raw_data_Left = zeros(num_trials,hand_DOF);
+% raw_data_Right = zeros(num_trials,hand_DOF);
+% for j=1:num_trials
+%     % select which hand is the micmicing hand, to decide the time span of
+%     % it's holding phase
+%     if regexp(mimicHand,'left')
+%         raw_data_Left(j,:)= ( mean(Data_table.joint_angles_LeftHand{j}(:,Data_table.leftMimic_start_frame(j):Data_table.leftMimic_start_frame(j)+n_frames-1),2))'; % Left Hand
+%         raw_data_Right(j,:)= ( mean(Data_table.joint_angles_RightHand{j}(:,Data_table.leftMimic_start_frame(j):Data_table.leftMimic_start_frame(j)+n_frames-1),2))'; % Right Hand
+%     elseif regexp(mimicHand,'right')
+%         raw_data_Left(j,:)= ( mean(Data_table.joint_angles_LeftHand{j}(:,Data_table.rightMimic_start_frame(j):Data_table.rightMimic_start_frame(j)+n_frames-1),2))'; % Left Hand
+%         raw_data_Right(j,:)= ( mean(Data_table.joint_angles_RightHand{j}(:,Data_table.rightMimic_start_frame(j):Data_table.rightMimic_start_frame(j)+n_frames-1),2))'; % Right Hand
+%     end
+% end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-raw_data_Left = zeros(num_trials,hand_DOF);
-raw_data_Right = zeros(num_trials,hand_DOF);
+%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% taking in an epoch in the holding phase, and spit out the downsampled
+%%%%% frames %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+n_samples = 10; % number of samples to use in each epoch
+raw_data_Left = zeros(num_trials*n_samples,hand_DOF);
+raw_data_Right = zeros(num_trials*n_samples,hand_DOF);
+step_size = n_frames/n_samples;
 for j=1:num_trials
     % select which hand is the micmicing hand, to decide the time span of
     % it's holding phase
     if regexp(mimicHand,'left')
-        raw_data_Left(j,:)= ( mean(Data_table.joint_angles_LeftHand{j}(:,Data_table.leftMimic_start_frame(j):Data_table.leftMimic_start_frame(j)+frame_rate*duration-1),2))'; % Left Hand
-        raw_data_Right(j,:)= ( mean(Data_table.joint_angles_RightHand{j}(:,Data_table.leftMimic_start_frame(j):Data_table.leftMimic_start_frame(j)+frame_rate*duration-1),2))'; % Right Hand
+        raw_data_Left(1+(j-1)*10:j*10,:)= downsample((Data_table.joint_angles_LeftHand{j}(:,Data_table.leftMimic_start_frame(j):Data_table.leftMimic_start_frame(j)+n_frames))',step_size); % Left Hand
+        raw_data_Right(1+(j-1)*10:j*10,:)= downsample((Data_table.joint_angles_RightHand{j}(:,Data_table.leftMimic_start_frame(j):Data_table.leftMimic_start_frame(j)+n_frames))',step_size); % Right Hand
     elseif regexp(mimicHand,'right')
-        raw_data_Left(j,:)= ( mean(Data_table.joint_angles_LeftHand{j}(:,Data_table.rightMimic_start_frame(j):Data_table.rightMimic_start_frame(j)+frame_rate*duration-1),2))'; % Left Hand
-        raw_data_Right(j,:)= ( mean(Data_table.joint_angles_RightHand{j}(:,Data_table.rightMimic_start_frame(j):Data_table.rightMimic_start_frame(j)+frame_rate*duration-1),2))'; % Right Hand
+        raw_data_Left(1+(j-1)*10:j*10,:)=  downsample((Data_table.joint_angles_LeftHand{j}(:,Data_table.rightMimic_start_frame(j):Data_table.rightMimic_start_frame(j)+n_frames-1))',step_size); % Left Hand
+        raw_data_Right(1+(j-1)*10:j*10,:)= downsample((Data_table.joint_angles_RightHand{j}(:,Data_table.rightMimic_start_frame(j):Data_table.rightMimic_start_frame(j)+n_frames-1))',step_size); % Right Hand
     end
 end
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [coeff,score,latent,tsquared,explained,mu] = pca([raw_data_Left;raw_data_Right]);
 
-% show two clusters from left and right hand
-figure
-scatter3(score(1:60,1),score(1:60,2),score(1:60,3));
-hold on
-scatter3(score(61:120,1),score(61:120,2),score(61:120,3),'red');
-legend('Left Hand','Right Hand');
 
-% show the detailed classification
-figure
-size = 50; 
-% 1. cone
-scatter3(score(1:5,1),score(1:5,2),score(1:5,3),size,[ 1 1 0 ],'o');%  async
-hold on
-scatter3(score(6:10,1),score(6:10,2),score(6:10,3),size,[ 1 1 0],'*');%  sync
-
-% 2. cylinder 
-scatter3(score(11:15,1),score(11:15,2),score(11:15,3),size,[  1 0 1],'o');% async
-scatter3(score(16:20,1),score(16:20,2),score(16:20,3),size,[  1 0 1],'*');% sync
-
-% 3. drum
-scatter3(score(21:25,1),score(21:25,2),score(21:25,3),size,[ 0 1 1],'o');% async
-scatter3(score(26:30,1),score(26:30,2),score(26:30,3),size,[ 0 1 1],'*');% sync
-
-% 4. mouse
-scatter3(score(31:35,1),score(31:35,2),score(31:35,3),size,[ 1 0 0],'o');% async
-scatter3(score(36:40,1),score(36:40,2),score(36:40,3),size,[ 1 0 0],'*');% sync
-
-% 5. papercup
-scatter3(score(41:45,1),score(41:45,2),score(41:45,3),size,[ 0 1 0],'o');% async
-scatter3(score(46:50,1),score(46:50,2),score(46:50,3),size,[ 0 1 0],'*');% sync
-
-% 6. pen
-scatter3(score(51:55,1),score(51:55,2),score(51:55,3),size,[ 0 0 1],'o');% async
-scatter3(score(56:60,1),score(56:60,2),score(56:60,3),size,[ 0 0 1],'*');% sync
-
-% right hand
-scatter3(score(61:120,1),score(61:120,2),score(61:120,3),size,'s');
-legend('cone async','cone sync','cylinder async','cylinder sync','drum async','drum sync',...
-    'mouse async','mouse sync','papercup async','papercup sync','pen async','pen sync','RIGHT HAND');
+%%%%%%%%%%%%%%%%%%%%% OLD PLOTTING SCRIPT BELOW, WON'T WORK WITH THE  %%%
+%%%%%%%%%%%%%%%%%%%%% LASTEST CODE ABOVE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% % show two clusters from left and right hand
+% figure
+% scatter3(score(1:60,1),score(1:60,2),score(1:60,3));
+% hold on
+% scatter3(score(61:120,1),score(61:120,2),score(61:120,3),'red');
+% legend('Left Hand','Right Hand');
+% 
+% % show the detailed classification
+% figure
+% size = 50; 
+% % 1. cone
+% scatter3(score(1:5,1),score(1:5,2),score(1:5,3),size,[ 1 1 0 ],'o');%  async
+% hold on
+% scatter3(score(6:10,1),score(6:10,2),score(6:10,3),size,[ 1 1 0],'*');%  sync
+% 
+% % 2. cylinder 
+% scatter3(score(11:15,1),score(11:15,2),score(11:15,3),size,[  1 0 1],'o');% async
+% scatter3(score(16:20,1),score(16:20,2),score(16:20,3),size,[  1 0 1],'*');% sync
+% 
+% % 3. drum
+% scatter3(score(21:25,1),score(21:25,2),score(21:25,3),size,[ 0 1 1],'o');% async
+% scatter3(score(26:30,1),score(26:30,2),score(26:30,3),size,[ 0 1 1],'*');% sync
+% 
+% % 4. mouse
+% scatter3(score(31:35,1),score(31:35,2),score(31:35,3),size,[ 1 0 0],'o');% async
+% scatter3(score(36:40,1),score(36:40,2),score(36:40,3),size,[ 1 0 0],'*');% sync
+% 
+% % 5. papercup
+% scatter3(score(41:45,1),score(41:45,2),score(41:45,3),size,[ 0 1 0],'o');% async
+% scatter3(score(46:50,1),score(46:50,2),score(46:50,3),size,[ 0 1 0],'*');% sync
+% 
+% % 6. pen
+% scatter3(score(51:55,1),score(51:55,2),score(51:55,3),size,[ 0 0 1],'o');% async
+% scatter3(score(56:60,1),score(56:60,2),score(56:60,3),size,[ 0 0 1],'*');% sync
+% 
+% % right hand
+% scatter3(score(61:120,1),score(61:120,2),score(61:120,3),size,'s');
+% legend('cone async','cone sync','cylinder async','cylinder sync','drum async','drum sync',...
+%     'mouse async','mouse sync','papercup async','papercup sync','pen async','pen sync','RIGHT HAND');

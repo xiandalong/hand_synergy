@@ -17,6 +17,7 @@ Data_all = table();
 
 frame_rate = 120; % in Hz
 duration = 0.5; % in seconds
+n_frames = frame_rate*duration;
 
 % Left_JA_col_index = 6;
 % Right_JA_col_index = 7;
@@ -51,18 +52,46 @@ end
 %%%% 2. doing PCA on all the data including left and right mimicking %%%%%%
 
 % in total, there are 4 types of gestures performed in one recording(trial)
+n_samples = 10; % number of samples to use in each epoch
+step_size = n_frames/n_samples;
+
 for j = 1:size(Data_all,1)
-    Data_all.joint_angle_LM_holding_mimic{j} = ( mean(Data_all.joint_angles_LeftHand{j}(:,Data_all.leftMimic_start_frame(j):Data_all.leftMimic_start_frame(j)+frame_rate*duration-1),2))';
-    Data_all.joint_angle_LM_holding_grasp{j}= ( mean(Data_all.joint_angles_RightHand{j}(:,Data_all.leftMimic_start_frame(j):Data_all.leftMimic_start_frame(j)+frame_rate*duration-1),2))';
-    Data_all.joint_angle_RM_holding_mimic{j} = ( mean(Data_all.joint_angles_RightHand{j}(:,Data_all.rightMimic_start_frame(j):Data_all.rightMimic_start_frame(j)+frame_rate*duration-1),2))';
-    Data_all.joint_angle_RM_holding_grasp{j}= ( mean(Data_all.joint_angles_LeftHand{j}(:,Data_all.rightMimic_start_frame(j):Data_all.rightMimic_start_frame(j)+frame_rate*duration-1),2))';
+    Data_all.joint_angle_LM_holding_mimic{j} = downsample((Data_all.joint_angles_LeftHand{j}(:,Data_all.leftMimic_start_frame(j):Data_all.leftMimic_start_frame(j)+frame_rate*duration-1))',step_size);
+    Data_all.joint_angle_LM_holding_grasp{j}= downsample((Data_all.joint_angles_RightHand{j}(:,Data_all.leftMimic_start_frame(j):Data_all.leftMimic_start_frame(j)+frame_rate*duration-1))',step_size);
+    Data_all.joint_angle_RM_holding_mimic{j} = downsample((Data_all.joint_angles_RightHand{j}(:,Data_all.rightMimic_start_frame(j):Data_all.rightMimic_start_frame(j)+frame_rate*duration-1))',step_size);
+    Data_all.joint_angle_RM_holding_grasp{j}= downsample((Data_all.joint_angles_LeftHand{j}(:,Data_all.rightMimic_start_frame(j):Data_all.rightMimic_start_frame(j)+frame_rate*duration-1))',step_size);
 end
 mimic_all = [cell2mat(Data_all.joint_angle_LM_holding_mimic);cell2mat(Data_all.joint_angle_RM_holding_mimic)]; % congregating all mimicking hand postures
 grasp_all = [cell2mat(Data_all.joint_angle_LM_holding_grasp);cell2mat(Data_all.joint_angle_RM_holding_grasp)]; % congregating all grasping hand postures
-labels_for_all = repmat([Data_all.Object,Data_all.synchronized_asynchronized],4,1);
 
-[coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
+Object_labels = repmat(reshape(Data_all.Object,1,size(Data_all,1)),n_samples,1);% repeat for a certain amount of samples per trial
+sync_labels = repmat(reshape(Data_all.synchronized_asynchronized,1,size(Data_all,1)),n_samples,1);
+
+labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times because it's essentially [Data_all.joint_angle_LM_holding_mimic;Data_all.joint_angle_RM_holding_mimic;Data_all.joint_angle_LM_holding_grasp;Data_all.joint_angle_RM_holding_grasp];
+
+%%%%%%%%%%%%%%%%%%%%%%%%% DIMENSION REDUCTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%% 1. PCA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%% 2. Multidimensional scaling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+D = pdist([mimic_all;grasp_all]); % calculate Euclidean distance matrix 
+%%%% a. classical MDS
+% score = cmdscale(D); % classic MDS yield exactly the same result as PCA is E-distance is used (look at http://stats.stackexchange.com/questions/14002/whats-the-difference-between-principal-components-analysis-and-multidimensional)
+%%%% b. Nonclassical multidimensional scaling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p = 3; % p is the target number of dimensions
+score = mdscale(D,p);
+
+%%%%%% 3. trying out all dimensionality reduction methods from this matlab
+%%%%%% website(http://lvdmaaten.github.io/drtoolbox/#download)
+[score, mapping] = compute_mapping([mimic_all;grasp_all], 'tSNE',3); % t-SNE seems have good separation, look into individual subjects later.
+
+[score, mapping] = compute_mapping([mimic_all;grasp_all], 'LPP',3); % this one seems have less variance within a cluster
+
+%%%%%%%%%%%%%%%%%%%%%%%%% VISUALIZING CLUSTERING QUALITY %%%%%%%%%%%%%%%%%%
+[s,h] = silhouette(score,repmat(Object_labels(:),4,1)); 
+
 
 %% %%%%%%%%%%%%%%%%%%%%%% PLOTTING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%% 1. first version %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -191,18 +220,18 @@ for j=mimicking_range
     end
 end
 % check for exception
-if size(cone_sync,1)~=10*num_subj||size(cone_async,1)~=10*num_subj||...
-        size(cylinder_sync,1)~=10*num_subj||size(cylinder_async,1)~=10*num_subj||...
-        size(drum_sync,1)~=10*num_subj||size(drum_async,1)~=10*num_subj||...
-        size(mouse_sync,1)~=10*num_subj||size(mouse_async,1)~=10*num_subj||...
-        size(papercup_sync,1)~=10*num_subj||size(papercup_async,1)~=10*num_subj||...
-        size(pen_sync,1)~=10*num_subj||size(pen_async,1)~=10*num_subj
+if size(cone_sync,1)~=10*n_samples*num_subj||size(cone_async,1)~=10*n_samples*num_subj||...
+        size(cylinder_sync,1)~=10*n_samples*num_subj||size(cylinder_async,1)~=10*n_samples*num_subj||...
+        size(drum_sync,1)~=10*n_samples*num_subj||size(drum_async,1)~=10*n_samples*num_subj||...
+        size(mouse_sync,1)~=10*n_samples*num_subj||size(mouse_async,1)~=10*n_samples*num_subj||...
+        size(papercup_sync,1)~=10*n_samples*num_subj||size(papercup_async,1)~=10*n_samples*num_subj||...
+        size(pen_sync,1)~=10*n_samples*num_subj||size(pen_async,1)~=10*n_samples*num_subj
     error('Number of trials does not add up as expected.')
 end
 
 
 % plotting into 3D space
-subject_range = 21:30;% 1:10 is for subject, 11:20 for subject 3, 21:30 for subject 4
+subject_range = 1:300;% 1:10 is for subject, 11:20 for subject 3, 21:30 for subject 4
  figure
 % 1. cone
 scatter3(cone_async(subject_range,1),cone_async(subject_range,2),cone_async(subject_range,3),point_size,[ 1 1 0],'o');%  async
@@ -224,7 +253,7 @@ scatter3(papercup_sync(subject_range,1),papercup_sync(subject_range,2),papercup_
 scatter3(pen_async(subject_range,1),pen_async(subject_range,2),pen_async(subject_range,3),point_size,[ 0 0 1],'o');%  async
 scatter3(pen_sync(subject_range,1),pen_sync(subject_range,2),pen_sync(subject_range,3),point_size,[ 0 0 1],'*');%  sync
 
-title('Subject 2');
+% title('Subject 2');
 legend('cone async','cone sync','cylinder async','cylinder sync','drum async','drum sync',...
      'mouse async','mouse sync','papercup async','papercup sync','pen async','pen sync');
 
@@ -245,7 +274,7 @@ avg_pen_sync = mean(pen_sync(subject_range,:),1);
 % plot the average with lines linked between sync-async
 figure
 scatter3(avg_cone_async(:,1),avg_cone_async(:,2),avg_cone_async(:,3),point_size,[ 1 1 0],'o');%  async
-% hold on
+hold on
 scatter3(avg_cone_sync(:,1),avg_cone_sync(:,2),avg_cone_sync(:,3),point_size,[ 1 1 0],'*');%  sync
 line([avg_cone_async(:,1) avg_cone_sync(:,1)],[avg_cone_async(:,2) avg_cone_sync(:,2)],[avg_cone_async(:,3) avg_cone_sync(:,3)],'color',[ 1 1 0]);
 
