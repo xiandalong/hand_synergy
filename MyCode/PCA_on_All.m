@@ -64,30 +64,33 @@ end
 mimic_all = [cell2mat(Data_all.joint_angle_LM_holding_mimic);cell2mat(Data_all.joint_angle_RM_holding_mimic)]; % congregating all mimicking hand postures
 grasp_all = [cell2mat(Data_all.joint_angle_LM_holding_grasp);cell2mat(Data_all.joint_angle_RM_holding_grasp)]; % congregating all grasping hand postures
 
+hand_postures_all = [mimic_all;grasp_all];
+
 Object_labels = repmat(reshape(Data_all.Object,1,size(Data_all,1)),n_samples,1);% repeat for a certain amount of samples per trial
 sync_labels = repmat(reshape(Data_all.synchronized_asynchronized,1,size(Data_all,1)),n_samples,1);
 
 labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times because it's essentially [Data_all.joint_angle_LM_holding_mimic;Data_all.joint_angle_RM_holding_mimic;Data_all.joint_angle_LM_holding_grasp;Data_all.joint_angle_RM_holding_grasp];
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%% DIMENSION REDUCTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% 1. PCA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
+[coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% 2. Multidimensional scaling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-D = pdist([mimic_all;grasp_all]); % calculate Euclidean distance matrix 
+% D = pdist(hand_postures_all); % calculate Euclidean distance matrix 
 %%%% a. classical MDS
 % score = cmdscale(D); % classic MDS yield exactly the same result as PCA is E-distance is used (look at http://stats.stackexchange.com/questions/14002/whats-the-difference-between-principal-components-analysis-and-multidimensional)
 %%%% b. Nonclassical multidimensional scaling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-p = 3; % p is the target number of dimensions
-score = mdscale(D,p);
+% p = 3; % p is the target number of dimensions
+% score = mdscale(D,p);
 
 %%%%%% 3. trying out all dimensionality reduction methods from this matlab
 %%%%%% website(http://lvdmaaten.github.io/drtoolbox/#download)
-[score, mapping] = compute_mapping([mimic_all;grasp_all], 'tSNE',3); % t-SNE seems have good separation, look into individual subjects later.
-
-[score, mapping] = compute_mapping([mimic_all;grasp_all], 'LPP',3); % this one seems have less variance within a cluster
+% [score, mapping] = compute_mapping(hand_postures_all, 'tSNE',3); % t-SNE seems have good separation, look into individual subjects later.
+% 
+% [score, mapping] = compute_mapping(hand_postures_all, 'LPP',3); % this one seems have less variance within a cluster
 
 %%%%%%%%%%%%%%%%%%%%%%%%% VISUALIZING CLUSTERING QUALITY %%%%%%%%%%%%%%%%%%
 [s,h] = silhouette(score,repmat(Object_labels(:),4,1)); 

@@ -1,0 +1,18 @@
+rm(list = ls()) # clear all variables in the workspace
+
+library(R.matlab) # load R.matlab library to load data from .mat files
+setwd('C:\\Users\\kelvi_000\\OneDrive\\Haptics research\\hand_synergy\\MyCode') # set up the working directory
+
+##  loading mat files, the cell arrays loads in a nasty format, abandon 
+# data<-readMat('Data_all.mat') # reading data from .mat file, data will be a list
+# JA = data$data # JA is all the joint angle data and will be a matrix
+# labels = data$labels.for.all  # labels for all objects
+# manovadata <- data.frame(JA) # convert matrix to data frame
+
+## loading csv file
+mydata <- read.table("data.txt",head=TRUE,sep=',')
+fit1<-manova(data = mydata, cbind(A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15,A16,A17,A18,A19,A20)~A21)
+summary(fit1, test="Wilks")
+
+fit2<-manova(data = mydata, cbind(A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15,A16,A17,A18,A19,A20)~A22)
+summary(fit2, test="Wilks")
