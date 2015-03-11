@@ -75,7 +75,7 @@ labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times
 %%%%%%%%%%%%%%%%%%%%%%%%% DIMENSION REDUCTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% 1. PCA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
+% [coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% 2. Multidimensional scaling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,9 +91,9 @@ labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times
 % [score, mapping] = compute_mapping(hand_postures_all, 'tSNE',3); % t-SNE seems have good separation, look into individual subjects later.
 % 
 % [score, mapping] = compute_mapping(hand_postures_all, 'LPP',3); % this one seems have less variance within a cluster
-
+[score, mapping] = compute_mapping(hand_postures_all, 'KernelPCA',3,'linear');
 %%%%%%%%%%%%%%%%%%%%%%%%% VISUALIZING CLUSTERING QUALITY %%%%%%%%%%%%%%%%%%
-[s,h] = silhouette(score,repmat(Object_labels(:),4,1)); 
+% [s,h] = silhouette(score,repmat(Object_labels(:),4,1)); 
 
 
 %% %%%%%%%%%%%%%%%%%%%%%% PLOTTING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
