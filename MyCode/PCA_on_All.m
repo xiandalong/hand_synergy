@@ -76,6 +76,7 @@ labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times
 
 %%%%%% 1. PCA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % [coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
+[coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% 2. Multidimensional scaling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,7 +92,7 @@ labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times
 % [score, mapping] = compute_mapping(hand_postures_all, 'tSNE',3); % t-SNE seems have good separation, look into individual subjects later.
 % 
 % [score, mapping] = compute_mapping(hand_postures_all, 'LPP',3); % this one seems have less variance within a cluster
-[score, mapping] = compute_mapping(hand_postures_all, 'KernelPCA',3,'linear');
+% [score, mapping] = compute_mapping(hand_postures_all, 'KernelPCA',3,'linear');
 %%%%%%%%%%%%%%%%%%%%%%%%% VISUALIZING CLUSTERING QUALITY %%%%%%%%%%%%%%%%%%
 % [s,h] = silhouette(score,repmat(Object_labels(:),4,1)); 
 
@@ -257,8 +258,9 @@ scatter3(pen_async(subject_range,1),pen_async(subject_range,2),pen_async(subject
 scatter3(pen_sync(subject_range,1),pen_sync(subject_range,2),pen_sync(subject_range,3),point_size,[ 0 0 1],'*');%  sync
 
 % title('Subject 2');
-legend('cone async','cone sync','cylinder async','cylinder sync','drum async','drum sync',...
+h_legend = legend('cone async','cone sync','cylinder async','cylinder sync','drum async','drum sync',...
      'mouse async','mouse sync','papercup async','papercup sync','pen async','pen sync');
+set(h_legend,'FontSize',12);
 
  
 avg_cone_async = mean(cone_async(subject_range,:),1);
