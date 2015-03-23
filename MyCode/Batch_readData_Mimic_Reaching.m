@@ -5,9 +5,9 @@
 subj = 'Subject4';
 mimicHand = 'right';
 if strcmp(mimicHand,'left')
-    data_path = ['C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\LeftMimicRight\Data_',subj,'.mat'];
+    data_path = ['C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\Data_',subj,'.mat'];
 elseif strcmp(mimicHand,'right')
-    data_path = ['C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\RightMimicLeft\Data_',subj,'.mat'];
+    data_path = ['C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\Data_',subj,'.mat'];
 else error('Mimicking hand should be either left or right');
 end
 load(data_path); % load "Data_table" from saved mat file

@@ -66,3 +66,20 @@ writetable(T,filename);
 % The R code for MANOVA is under "..\Rcode\MANOVA.R"
 % The two MANOVA tests all gave me very significant p value in both MATLAB
 % and R.
+
+
+%%%%%%%%%%%%%%%%%%%%%% using "manova" in MATLAB %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% 3/22/2015 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1. put all data into a table
+t = table(syn_labels,grasp_all(:,1),grasp_all(:,2),grasp_all(:,3),grasp_all(:,4),...
+    grasp_all(:,5),grasp_all(:,6),grasp_all(:,7),grasp_all(:,8),...
+    grasp_all(:,9),grasp_all(:,10),grasp_all(:,11),grasp_all(:,12),...
+    grasp_all(:,13),grasp_all(:,14),grasp_all(:,15),grasp_all(:,16),...
+    grasp_all(:,17),grasp_all(:,18),grasp_all(:,19),grasp_all(:,20),...
+'VariableNames',{'sync','JA1','JA2','JA3','JA4','JA5','JA6','JA7','JA8','JA9','JA10',...
+'JA11','JA12','JA13','JA14','JA15','JA16','JA17','JA18','JA19','JA20'});
+JA = table([1:20]','VariableNames',{'JA'});
+% 2. fit the data into repeated measure model
+rm = fitrm(t,'JA1-JA20~sync','WithinDesign',JA);
+
+manovatbl = manova(rm);
