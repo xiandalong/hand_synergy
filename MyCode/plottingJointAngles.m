@@ -30,23 +30,23 @@ end
 writerObj = VideoWriter(save_path);
 writerObj.FrameRate = 120;
 writerObj.Quality = 100;
-open(writerObj);
-
-for j=1:num_frame
-    
-    q = joint_angles_sm(:,j);
-    qm_my=q*pi/180';
-    hand = SGmoveHand(hand,qm_my);
-    SGplotHand(hand);
-    grid on
-    axis([-100 100 -180 0 -60 20 ]);
-    
-    frame = getframe;
-    writeVideo(writerObj,frame);
-    
-end
-
-close(writerObj);
+% open(writerObj);
+% 
+% for j=1:num_frame
+%     
+%     q = joint_angles_sm(:,j);
+%     qm_my=q*pi/180';
+%     hand = SGmoveHand(hand,qm_my);
+%     SGplotHand(hand);
+%     grid on
+%     axis([-100 100 -180 0 -60 20 ]);
+%     
+%     frame = getframe;
+%     writeVideo(writerObj,frame);
+%     
+% end
+% 
+% close(writerObj);
 
 %% This part is to plot joint angle time series
 figure

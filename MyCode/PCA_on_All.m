@@ -36,6 +36,7 @@ for j = 1:size(Data_all,1)
 end
 mimic_all = [cell2mat(Data_all.joint_angle_LM_holding_mimic);cell2mat(Data_all.joint_angle_RM_holding_mimic)]; % congregating all mimicking hand postures
 grasp_all = [cell2mat(Data_all.joint_angle_LM_holding_grasp);cell2mat(Data_all.joint_angle_RM_holding_grasp)]; % congregating all grasping hand postures
+diff_all = grasp_all-mimic_all; % the difference between the grasp hand and mimic hand(the error term)
 
 hand_postures_all = [mimic_all;grasp_all];
 
@@ -48,10 +49,10 @@ labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times
 %%%%%%%%%%%%%%%%%%%%%%%%% DIMENSION REDUCTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% 1. PCA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [coeff,score,latent,tsquared,explained,mu] = pca([mimic_all;grasp_all]);
-
-[coeff,score,latent,tsquared,explained,mu] = pca(mimic_all([1:50 1801:1850] ,:));% explained variance increases when the number of gestures is limited(this is only one gesture and the first two PC accounts for 81% of var)
-
+% [coeff,score,latent,tsquared,explained,mu] = pca(hand_postures_all);
+% [coeff,score,latent,tsquared,explained,mu] = pca(diff_all);
+% [coeff,score,latent,tsquared,explained,mu] = pca(mimic_all([1:50 1801:1850] ,:));% explained variance increases when the number of gestures is limited(this is only one gesture and the first two PC accounts for 81% of var)
+[coeff,score,latent,tsquared,explained,mu] = pca(mimic_all);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -66,7 +67,7 @@ labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times
 %%%%%% 3. trying out all dimensionality reduction methods from this matlab
 %%%%%% website(http://lvdmaaten.github.io/drtoolbox/#download)
 % [score, mapping] = compute_mapping(hand_postures_all, 'tSNE',3); % t-SNE seems have good separation, look into individual subjects later.
-% 
+% [score, mapping] = compute_mapping(hand_postures_all, 'PCA',3);
 % [score, mapping] = compute_mapping(hand_postures_all, 'LPP',3); % this one seems have less variance within a cluster
 % [score, mapping] = compute_mapping(hand_postures_all, 'KernelPCA',3,'linear');
 %%%%%%%%%%%%%%%%%%%%%%%%% VISUALIZING CLUSTERING QUALITY %%%%%%%%%%%%%%%%%%
@@ -211,7 +212,7 @@ end
 
 
 % plotting into 3D space
-subject_range = 1:300;% 1:10 is for subject, 11:20 for subject 3, 21:30 for subject 4
+subject_range = 1:300;% 1:10 is for subject4, 11:20 for subject 3, 21:30 for subject 2
  figure
 % 1. cone
 scatter3(cone_async(subject_range,1),cone_async(subject_range,2),cone_async(subject_range,3),point_size,[ 1 1 0],'o');%  async
@@ -283,3 +284,9 @@ line([avg_papercup_async(:,1) avg_papercup_sync(:,1)],[avg_papercup_async(:,2) a
 scatter3(avg_pen_async(:,1),avg_pen_async(:,2),avg_pen_async(:,3),point_size,[ 0 0 1],'o');%  async
 scatter3(avg_pen_sync(:,1),avg_pen_sync(:,2),avg_pen_sync(:,3),point_size,[ 0 0 1],'*');%  sync
 line([avg_pen_async(:,1) avg_pen_sync(:,1)],[avg_pen_async(:,2) avg_pen_sync(:,2)],[avg_pen_async(:,3) avg_pen_sync(:,3)],'color',[ 0 0 1]);
+
+%% plotting the explained variance curve for PCA
+cumsum_explained = cumsum(explained);
+plot(1:20,cumsum_explained,'b');
+xlabel('Number of PCs');
+ylabel('Explained Variance');

@@ -43,7 +43,7 @@ subplot(1,2,1)
 plot(1:20,cumsum_explained_grasp_sync,'b');
 hold on
 plot(1:20,cumsum_explained_mimic_sync,'r');
-legend('grasp sync','mimic sync');
+legend('grasping hand','mimicking hand');
 % b. synchronous case
 cumsum_explained_grasp_async = cumsum(explained_grasp_async);
 cumsum_explained_mimic_async = cumsum(explained_mimic_async);
@@ -51,4 +51,4 @@ subplot(1,2,2)
 plot(1:20,cumsum_explained_grasp_async,'b');
 hold on
 plot(1:20,cumsum_explained_mimic_async,'r');
-legend('grasp async','mimic async');
+legend('grasping hand','mimicking hand');

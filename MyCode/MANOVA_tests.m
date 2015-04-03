@@ -83,3 +83,7 @@ JA = table([1:20]','VariableNames',{'JA'});
 rm = fitrm(t,'JA1-JA20~sync','WithinDesign',JA);
 
 manovatbl = manova(rm);
+
+%%%%%%%%%%%%%%%%%%%%%% doing MANOVA for each object %%%%%%%%%%%%%%%%%%%%%%%
+%% a. cone sync-async
+% 1. put all data into a table
