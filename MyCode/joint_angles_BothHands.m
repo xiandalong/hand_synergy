@@ -9,7 +9,8 @@
 %% (1). read marker position data and get joint angles
 
 % Left Hand
-csv_path = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\optiTrackData\Session 2014-11-20\cylinder_a1.csv';
+% csv_path = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\optiTrackData\Session 2014-11-20\cylinder_a1.csv';
+csv_path = 'C:\Users\kelvi_000\OneDrive\Haptics research\Data and docs\optiTrackData\Session 2014-12-11\cylinder_a2.csv';
 marker_set_LeftHand = 'LeftHand';
 palm_marker_index_LeftHand = 26:33;
 finger_marker_index_LeftHand =reshape(1:25,5,5)';
@@ -31,7 +32,7 @@ joint_angles_RightHand = getJointAngles(marker_pos_RightHand,...
 
 %% (2). plotting and making animation for both hands
 save_path='S:\LeftHand.avi';
-sma_factor=10;
+sma_factor=50;
 plottingJointAngles(joint_angles_LeftHand,save_path, sma_factor);
 
 save_path='C:\Users\USER\Desktop\RightHand.avi';

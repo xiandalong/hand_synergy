@@ -24,10 +24,21 @@ grid on
 % % for mimicking
 % data = mimic_all;
 % obj_labels = labels_for_all(1:3600,1);
+% a. sync mimicking
+data = mimic_sync;
+obj_labels = labels_for_sync;
+dendrogram_path = 'C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\mimic_all_figures\CA dendrogram mimic 6Objs 3D sync.eps';
+cluster_plot_path = 'C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\mimic_all_figures\canonical analysis plot mimic 6Objs 3D sync.eps';
+
+% % b. async mimicking
+% data = mimic_async;
+% obj_labels = labels_for_async;
+% dendrogram_path = 'C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\mimic_all_figures\CA dendrogram mimic 6Objs 3D async.eps';
+% cluster_plot_path = 'C:\Users\kelvi_000\OneDrive\Haptics research\hand_synergy\MyCode\mimic_all_figures\canonical analysis plot mimic 6Objs 3D async.eps';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% for grasping
-data = grasp_all;
-syn_labels = labels_for_all(3601:7200,1);
+% % for grasping
+% data = grasp_all;
+% syn_labels = labels_for_all(3601:7200,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [d,p,stats] = manova1(data,obj_labels);
 c1 = stats.canon(:,1);
@@ -41,13 +52,16 @@ for k = 1:numel(gu)
 end
 view(3)
 grid on
+saveas(gcf,cluster_plot_path,'psc');
 figure
 manovacluster(stats);
+ylim([0 55])
+saveas(gcf,dendrogram_path,'psc');
 
 %%%%%%%%%%%%%%%%%%%%% use the eigenvectors from grasping hand and apply it
 %%%%%%%%%%%%%%%%%%%%% to mimicking hand data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-canon = (mimic_all-repmat(mean(mimic_all,1),size(mimic_all,1),1))*stats.eigenvec;
-canonicalAnalysis(canon,obj_labels);
+% canon = (mimic_all-repmat(mean(mimic_all,1),size(mimic_all,1),1))*stats.eigenvec;
+% canonicalAnalysis(canon,obj_labels);
 
 %%%%%%%%%%%%%%%%%%%%% Trying MANOVA in R %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%% see if the results are similar %%%%%%%%%%%%%%%%%%%%%%%%%%%%%

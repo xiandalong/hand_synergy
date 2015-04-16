@@ -30,10 +30,15 @@ end
 
 
 %% 3. PCA on all four cases
+%%%% 3.1. PCA on four cases separately
 [coeff_grasp_sync,score_grasp_sync,latent_grasp_sync,tsquared_grasp_sync,explained_grasp_sync,mu_grasp_sync] = pca(grasp_sync);
 [coeff_mimic_sync,score_mimic_sync,latent_mimic_sync,tsquared_mimic_sync,explained_mimic_sync,mu_mimic_sync] = pca(mimic_sync);
 [coeff_grasp_async,score_grasp_async,latent_grasp_async,tsquared_grasp_async,explained_grasp_async,mu_grasp_async] = pca(grasp_async);
 [coeff_mimic_async,score_mimic_async,latent_mimic_async,tsquared_mimic_async,explained_mimic_async,mu_mimic_async] = pca(mimic_async);
+%%%% 3.2. PCA on difference of each case(sync/async), namely
+%%%% "mimic_sync-grasp_sync" and "mimic_async-grasp_async"
+[coeff_diff_sync,score_diff_sync,latent_diff_sync,tsquared_diff_sync,explained_diff_sync,mu_diff_sync] = pca(mimic_sync-grasp_sync);
+[coeff_diff_async,score_diff_async,latent_diff_async,tsquared_diff_async,explained_diff_async,mu_diff_async] = pca(mimic_async-grasp_async);
 
 %% 4. plotting cumsum for explained variances
 % a. synchronous case
@@ -52,3 +57,42 @@ plot(1:20,cumsum_explained_grasp_async,'b');
 hold on
 plot(1:20,cumsum_explained_mimic_async,'r');
 legend('grasping hand','mimicking hand');
+
+% c. all 4 cases
+
+figure
+plot(1:20,cumsum_explained_grasp_sync,'--b');
+hold on
+plot(1:20,cumsum_explained_grasp_async,'b');
+plot(1:20,cumsum_explained_mimic_sync,'--r');
+plot(1:20,cumsum_explained_mimic_async,'r');
+legend('grasping sync','grasping async','mimicking sync','mimicking async');
+xlim([1 10]);
+xlabel('Number of Principle Component');
+ylabel('Cumulative Explained Variance(%)');
+
+
+
+
+%% 5. plot the difference of EV
+EVdiff_sync = cumsum_explained_mimic_sync - cumsum_explained_grasp_sync;
+EVdiff_async = cumsum_explained_mimic_async - cumsum_explained_grasp_async;
+figure
+plot(1:20,EVdiff_sync,'--g');
+hold on
+plot(1:20,EVdiff_async,'g');
+legend('EV diff sync','EV diff async');
+xlabel('Number of Principle Component');
+ylabel('Cumulative Explained Variance(%)');
+xlim([1 10]);
+
+%% 6. plotting PCA EV for difference of hand shape for sync/async case
+cumsum_explained_diff_sync = cumsum(explained_diff_sync);
+cumsum_explained_diff_async = cumsum(explained_diff_async);
+plot(1:20,cumsum_explained_diff_sync,'r');
+hold on
+plot(1:20,cumsum_explained_diff_async,'y');
+legend('diff sync','diff async');
+xlabel('# of PC');
+ylabel('Percentage of EV(%)');
+xlim([1 20]);

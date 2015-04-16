@@ -28,11 +28,19 @@ readDataFromAllSubjects;
 n_samples = 10; % number of samples to use in each epoch
 step_size = n_frames/n_samples;
 
+mimic_sync = [];
+mimic_async = [];
+
 for j = 1:size(Data_all,1)
     Data_all.joint_angle_LM_holding_mimic{j} = downsample((Data_all.joint_angles_LeftHand{j}(:,Data_all.leftMimic_start_frame(j):Data_all.leftMimic_start_frame(j)+frame_rate*duration-1))',step_size);
     Data_all.joint_angle_LM_holding_grasp{j}= downsample((Data_all.joint_angles_RightHand{j}(:,Data_all.leftMimic_start_frame(j):Data_all.leftMimic_start_frame(j)+frame_rate*duration-1))',step_size);
     Data_all.joint_angle_RM_holding_mimic{j} = downsample((Data_all.joint_angles_RightHand{j}(:,Data_all.rightMimic_start_frame(j):Data_all.rightMimic_start_frame(j)+frame_rate*duration-1))',step_size);
     Data_all.joint_angle_RM_holding_grasp{j}= downsample((Data_all.joint_angles_LeftHand{j}(:,Data_all.rightMimic_start_frame(j):Data_all.rightMimic_start_frame(j)+frame_rate*duration-1))',step_size);
+    if(strcmp(Data_all.synchronized_asynchronized{j},'Y'))
+        mimic_sync = [mimic_sync;Data_all.joint_angle_LM_holding_mimic{j};Data_all.joint_angle_RM_holding_mimic{j}];
+    elseif (strcmp(Data_all.synchronized_asynchronized{j},'N'))
+        mimic_async = [mimic_async;Data_all.joint_angle_LM_holding_mimic{j};Data_all.joint_angle_RM_holding_grasp{j}];
+    end
 end
 mimic_all = [cell2mat(Data_all.joint_angle_LM_holding_mimic);cell2mat(Data_all.joint_angle_RM_holding_mimic)]; % congregating all mimicking hand postures
 grasp_all = [cell2mat(Data_all.joint_angle_LM_holding_grasp);cell2mat(Data_all.joint_angle_RM_holding_grasp)]; % congregating all grasping hand postures
@@ -44,6 +52,9 @@ Object_labels = repmat(reshape(Data_all.Object,1,size(Data_all,1)),n_samples,1);
 sync_labels = repmat(reshape(Data_all.synchronized_asynchronized,1,size(Data_all,1)),n_samples,1);
 
 labels_for_all = repmat([Object_labels(:),sync_labels(:)],4,1); % repeat 4 times because it's essentially [Data_all.joint_angle_LM_holding_mimic;Data_all.joint_angle_RM_holding_mimic;Data_all.joint_angle_LM_holding_grasp;Data_all.joint_angle_RM_holding_grasp];
+
+labels_for_sync = Object_labels(:);
+labels_for_async = Object_labels(:);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%% DIMENSION REDUCTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -287,6 +298,7 @@ line([avg_pen_async(:,1) avg_pen_sync(:,1)],[avg_pen_async(:,2) avg_pen_sync(:,2
 
 %% plotting the explained variance curve for PCA
 cumsum_explained = cumsum(explained);
+figure
 plot(1:20,cumsum_explained,'b');
 xlabel('Number of PCs');
 ylabel('Explained Variance');

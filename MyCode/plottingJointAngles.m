@@ -51,8 +51,9 @@ writerObj.Quality = 100;
 %% This part is to plot joint angle time series
 figure
 t = (1:num_frame)/writerObj.FrameRate;
-plot(t, joint_angles');
+plot(t, joint_angles_sm');
 axis tight;
+xlim([1 25])
 xlabel('time/sec');
 ylabel('joint angle/degree');
 title('Joint Angle Time Series');
